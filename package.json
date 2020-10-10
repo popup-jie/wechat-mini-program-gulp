@@ -1,7 +1,6 @@
 {
   "name": "shop-wechat",
   "version": "1.0.0",
-  "description": "<center><h2>微商城项目文档</h2></center>",
   "main": "app.js",
   "scripts": {
     "tsc": "node ./node_modules/typescript/lib/tsc.js",
@@ -10,10 +9,6 @@
     "build": "gulp --NODE_ENV=pro",
     "test": "gulp --NODE_ENV=test",
     "clean": "gulp clean --NODE_ENV=pro"
-  },
-  "repository": {
-    "type": "git",
-    "url": "http://123.207.74.200:8091/ybf/shop-wechat.git"
   },
   "author": "",
   "license": "ISC",
