@@ -1,0 +1,40 @@
+{
+  "name": "shop-wechat",
+  "version": "1.0.0",
+  "description": "<center><h2>微商城项目文档</h2></center>",
+  "main": "app.js",
+  "scripts": {
+    "tsc": "node ./node_modules/typescript/lib/tsc.js",
+    "sync": "gulp syncPage",
+    "dev": "gulp --NODE_ENV=dev",
+    "build": "gulp --NODE_ENV=pro",
+    "test": "gulp --NODE_ENV=test",
+    "clean": "gulp clean --NODE_ENV=pro"
+  },
+  "repository": {
+    "type": "git",
+    "url": "http://123.207.74.200:8091/ybf/shop-wechat.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@vant/weapp": "^1.4.1",
+    "umtrack-wx": "^2.4.6",
+    "vant-weapp": "^0.5.28",
+    "vconsole": "^3.3.4"
+  },
+  "devDependencies": {
+    "gulp": "^4.0.2",
+    "gulp-changed": "^4.0.2",
+    "gulp-plumber": "^1.2.1",
+    "gulp-px2rpx": "^0.2.2",
+    "gulp-rename": "^2.0.0",
+    "gulp-sass": "^4.1.0",
+    "gulp-typescript": "^6.0.0-alpha.1",
+    "gulp-watch": "^5.0.1",
+    "gulp-wechat-weapp-src-alisa": "^1.0.3",
+    "node-watch": "^0.6.4",
+    "through2": "^4.0.2",
+    "typescript": "^3.3.3333"
+  }
+}
