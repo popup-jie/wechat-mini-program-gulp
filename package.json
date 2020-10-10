@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "main": "app.js",
   "scripts": {
-    "tsc": "node ./node_modules/typescript/lib/tsc.js",
     "sync": "gulp syncPage",
     "dev": "gulp --NODE_ENV=dev",
     "build": "gulp --NODE_ENV=pro",
