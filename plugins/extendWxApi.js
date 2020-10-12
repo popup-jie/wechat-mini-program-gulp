@@ -13,8 +13,6 @@ const isObject = (obj) => {
   return obj.constructor === Object
 }
 
-
-
 wx.$toast = (msg, cb, delay = 0) => {
   wx.showToast({
     title: '' + msg,

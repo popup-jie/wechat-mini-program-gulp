@@ -1,1 +1,3 @@
-export default { NODE_ENV : 'test' }
+"use strict";
+exports.__esModule = true;
+exports["default"] = { NODE_ENV: 'test' };

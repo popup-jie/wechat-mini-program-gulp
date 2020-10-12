@@ -1,11 +1,3 @@
-/*
- * @Description: 这是文件代码注释
- * @Version: 1.0
- * @Autor: popup
- * @Date: 2020-08-25 16:23:12
- * @LastEditors: popup
- * @LastEditTime: 2020-09-29 18:11:31
- */
 
 const fs = require('fs')
 const path = require('path');
@@ -15,16 +7,21 @@ async function syncPage() {
 
   const appJsonName = path.resolve(__dirname, '../app.json')
   const routesConfigName = path.resolve(__dirname, '../plugins/routesConfig.js')
-
-  const appJsonFile = fs.readFileSync(appJsonName, 'utf8');
+  let appJsonFile = null
+  try {
+    appJsonFile = fs.readFileSync(appJsonName, 'utf8');
+  } catch (e) {
+    appJsonFile = await syncReadFile(appJsonName, `{ "pages": [] }`
+    )
+  }
 
   const appJsonnewFormat = appJsonFile
     .replace(/(\r\n\t|\n|\r\t)/gm, '')
     .replace(/}{/g, '},{');
   let appjson = JSON.parse(appJsonnewFormat)
 
-  let routesConfigFile = fs.readFileSync(routesConfigName, 'utf-8')
-  // let routesConfigFile = await syncReadFile(routesConfigName, 'export default []')
+  // let routesConfigFile = fs.readFileSync(routesConfigName, 'utf-8')
+  let routesConfigFile = await syncReadFile(routesConfigName, 'export default []')
 
   const routesNewFormat = routesConfigFile
     .replace(/(\r\n\t|\n|\r\t)/gm, '')

@@ -4,12 +4,13 @@
  * @Autor: popup
  * @Date: 2020-08-25 16:23:12
  * @LastEditors: popup
- * @LastEditTime: 2020-09-29 16:42:39
+ * @LastEditTime: 2020-10-12 16:47:18
  */
 import routes from './routesConfig'
-import {
-  isObject
-} from '../utils/util'
+
+const isObject = (obj) => {
+  return obj.constructor === Object
+}
 function routerHandle() {
   return {
     go(num) {

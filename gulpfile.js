@@ -17,14 +17,12 @@ gulp.task('waterCss', async () => {
   });
 })
 
-// 监听ts文件并编译
-gulp.task('waterTs', async () => {
-
-  await watcher(config.buildTsUrl, async (event) => {
-    // console.log(event)
-    buildTypeScript(event)
-  })
+// 同步app.json->pages 和 routesConfig
+gulp.task('syncPage', async () => {
+  await syncPage()
 })
+
+
 
 // 监听ybf.js文件并编译，编译运用别名
 gulp.task('waterPagejs', async () => {
@@ -44,18 +42,22 @@ gulp.task('buildEnv', async () => {
   await changeEnvMode(process.argv.pop().split('=')[1])
 })
 
-// 同步app.json->pages 和 routesConfig
-gulp.task('syncPage', async () => {
-  await syncPage()
-})
 
 gulp.task('clean', async () => {
   gulpCleanConsole()
 })
+// 监听ts文件并编译
+gulp.task('waterTs', async () => {
+
+  await watcher(config.buildTsUrl, async (event) => {
+    // console.log(event)
+    buildTypeScript(event)
+  })
+})
 
 
 // 默认任务
-gulp.task('default', gulp.parallel(['waterCss', 'waterTs', 'waterPagejs', 'buildEnv', 'syncPage']), () => {
+gulp.task('default', gulp.parallel(['syncPage', 'waterCss', 'waterTs', 'waterPagejs', 'buildEnv']), () => {
   console.log('start')
 });
 

@@ -1,15 +1,3 @@
-/*
- * @Description: 这是文件代码注释
- * @Version: 1.0
- * @Autor: popup
- * @Date: 2020-08-31 10:01:24
- * @LastEditors: popup
- * @LastEditTime: 2020-09-28 14:37:34
- */
-// import {
-//   reactive
-// } from './extendAppGlobalProxy'
-
 const pageExtend = Page => {
   return object => {
     // 导出原生Page传入的object参数中的生命周期函数
