@@ -14,7 +14,7 @@ async function changeEnvMode(mode) {
     .replace(/{/g, '')
     .replace(/}/g, '')
   const left = newFormat.split(':')[0].trim()
-  fs.writeFile(filename, `export default { ${left || 'env'} : '${mode || 'dev'}' }`, (e) => {
+  fs.writeFile(filename, `module.exports = { ${left || 'env'} : '${mode || 'dev'}' }`, (e) => {
 
     // buildTypeScript({})
   })

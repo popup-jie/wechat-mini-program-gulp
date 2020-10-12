@@ -1,6 +1,6 @@
 exports.run = function (type, name) {
   var exec = require('child_process').exec;
-  // console.log(type)
+  console.log(type)
   var cmd = `npm run ${type}`;
 
   exec(cmd, function (err, stdout, stderr) {

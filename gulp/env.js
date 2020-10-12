@@ -1,1 +1,1 @@
-export default { env : 'dev' }
+module.exports = { module.exports =  module.exports =  module.exports =  env : 'dev' }

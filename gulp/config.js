@@ -4,7 +4,7 @@
  * @Autor: popup
  * @Date: 2020-08-25 16:23:12
  * @LastEditors: popup
- * @LastEditTime: 2020-10-12 17:28:59
+ * @LastEditTime: 2020-10-12 19:50:08
  */
 const GULP_CONFIG = {
   alisa: {
@@ -18,9 +18,10 @@ const GULP_CONFIG = {
   buildYbfUrl: ['./pages/**/ybf.js'],
   buildScssUrl: ['./**/*.scss'],
   buildTsUrl: ['./**/*.ts'],
-  appJsonFilePath: '../app.json',
+  appJsonFilePath: './app.json',
+  isTs: false
 }
-let alisa, buildYbfUrl, buildScssUrl, buildTsUrl, appJsonFilePath
+let alisa, buildYbfUrl, buildScssUrl, buildTsUrl, appJsonFilePath, isTs
 try {
   const path = require('path')
   let filePath = path.join(process.cwd(), './gulpconfig.js')
@@ -34,6 +35,7 @@ try {
   buildScssUrl = gulpconfig.buildScssUrl
   buildTsUrl = gulpconfig.buildTsUrl
   appJsonFilePath = gulpconfig.appJsonFilePath
+  isTs = gulpconfig.isTs
 
 } catch (e) {
   // 文件别名
@@ -42,6 +44,11 @@ try {
   buildYbfUrl = GULP_CONFIG.buildYbfUrl
   buildScssUrl = GULP_CONFIG.buildScssUrl
   buildTsUrl = GULP_CONFIG.buildTsUrl
+  appJsonFilePath = GULP_CONFIG.appJsonFilePath
+  isTs = GULP_CONFIG.isTs
+
+  buildScssUrl.push('!node_modules/**/*.scss')
+  buildTsUrl.push('!node_modules/**/*.ts')
 }
 
 module.exports = {
@@ -49,5 +56,6 @@ module.exports = {
   buildScssUrl: buildScssUrl,
   buildTsUrl: buildTsUrl,
   buildYbfUrl: buildYbfUrl,
-  appJsonFilePath
+  appJsonFilePath,
+  isTs
 }
