@@ -5,8 +5,14 @@ async function syncReadFile(filepath, initValue) {
     let file = fs.readFileSync(filepath, 'utf8')
     return file
   } catch (e) {
+    let file = null
+    let filesplit = filepath.split('\\')
+    let end = filesplit.pop()
+
+    fs.mkdirSync(filesplit.join('//'), { recursive: true })
+
     fs.writeFileSync(filepath, initValue, 'utf-8')
-    let file = fs.readFileSync(filepath, 'utf8')
+    file = fs.readFileSync(filepath, 'utf8')
     return file
   }
 }

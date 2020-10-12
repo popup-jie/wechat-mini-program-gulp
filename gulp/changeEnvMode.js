@@ -5,7 +5,7 @@ const buildTypeScript = require('./createdYbftsbuild')
 const { syncReadFile } = require('./utils')
 
 async function changeEnvMode(mode) {
-  const filename = path.join(process.cwd(), './config/env.js')
+  const filename = path.resolve(__dirname, './env.js')
   const file = await syncReadFile(filename, `export default { NODE_ENV : 'test' }`)
   const newFormat = file
     .replace(/(\r\n\t|\n|\r\t)/gm, '')
