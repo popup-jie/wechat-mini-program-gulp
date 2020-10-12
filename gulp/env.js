@@ -1,1 +1,1 @@
-export default { env : 'test' }
+export default { env : 'dev' }
