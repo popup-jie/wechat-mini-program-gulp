@@ -1,7 +1,6 @@
 {
-  "name": "shop-wechat",
+  "name": "wechat-mini-gulp",
   "version": "1.0.0",
-  "main": "app.js",
   "scripts": {
     "sync": "gulp syncPage",
     "dev": "gulp --NODE_ENV=dev",
