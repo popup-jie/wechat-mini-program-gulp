@@ -19,7 +19,7 @@ function createYbfPageTask(event) {
       path.basename = 'index'
       path.extname = '.js'
     }))
-    .pipe(changed('./pages')) //只编译改动的文件
+    // .pipe(changed('./pages')) //只编译改动的文件
     .pipe(gulp.dest(function (file) { return file.base; }))
     .pipe(rename((path) => {
       var d = event.base || 'pages'

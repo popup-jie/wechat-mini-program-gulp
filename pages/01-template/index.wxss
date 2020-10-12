@@ -1,1 +1,0 @@
-@keyframes fade{0%{left:50%;width:0;opacity:0}100%{opacity:1;left:0;width:100%}}:export{baseColor:#f5f5f5;modelBaseColor:#fff;dividerColor:#ededed;popUpBjColor:rgba(0,0,0,0.4);title:title;ell:ell;ell_2:ell_2;subTitle:subTitle}

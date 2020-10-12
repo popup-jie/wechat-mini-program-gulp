@@ -7,7 +7,7 @@ const { syncReadFile } = require('./utils')
 async function syncPage() {
 
   const appJsonName = path.join(process.cwd(), config.appJsonFilePath)
-  const routesConfigName = path.resolve(__dirname, '../plugins/routesConfig.js')
+  const routesConfigName = path.join(process.cwd(), config.routesConfigName)
   let appJsonFile = null
   try {
     appJsonFile = fs.readFileSync(appJsonName, 'utf8');

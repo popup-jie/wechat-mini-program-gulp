@@ -2,7 +2,7 @@ const fs = require('fs')
 const path = require('path');
 const gulp = require('gulp');
 const plumber = require('gulp-plumber'); // 报错日志
-
+const config = require('./config')
 
 function isFileExisted(filePath) {
   return new Promise(function (resolve, reject) {
@@ -27,6 +27,10 @@ function generateFile(event) {
 
   // 获取写入app.json 的文件，去掉\xxx\xx 的写反，反写为/xxx/xx
   let appjsonStr = str.substring(1, str.length - 1)
+
+  console.log(appjsonStr)
+  console.log(str)
+
   appjsonStr = appjsonStr.replace(/\\/g, '/')
 
   let filePath = event.path.split('\\')
@@ -53,7 +57,7 @@ function generateFile(event) {
 
 // 编译app.json
 function generateJson(pageUrl) {
-  const filename = path.resolve(__dirname, '../app.json')
+  const filename = path.join(process.cwd(), config.appJsonFilePath)
 
   // 针对app.json写入相对应的pages文件
   function convert(input_file_path) {

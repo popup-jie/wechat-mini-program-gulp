@@ -1,1 +1,1 @@
-module.exports = { module.exports =  module.exports =  module.exports =  env : 'dev' }
+module.exports = {     env : 'dev' }
