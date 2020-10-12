@@ -1,11 +1,3 @@
-/*
- * @Description: 这是文件代码注释
- * @Version: 1.0
- * @Autor: popup
- * @Date: 2020-08-25 16:23:12
- * @LastEditors: popup
- * @LastEditTime: 2020-10-12 16:47:18
- */
 import routes from './routesConfig'
 
 const isObject = (obj) => {
