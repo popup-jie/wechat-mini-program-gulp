@@ -8,6 +8,9 @@
     "test": "gulp --NODE_ENV=test",
     "clean": "gulp clean --NODE_ENV=pro"
   },
+  "bin": {
+    "wechat-gulp": "./link/link.js"
+  },
   "author": "",
   "license": "ISC",
   "dependencies": {
