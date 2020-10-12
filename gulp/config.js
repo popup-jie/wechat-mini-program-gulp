@@ -4,7 +4,7 @@
  * @Autor: popup
  * @Date: 2020-08-25 16:23:12
  * @LastEditors: popup
- * @LastEditTime: 2020-10-10 16:30:43
+ * @LastEditTime: 2020-10-12 17:28:59
  */
 const GULP_CONFIG = {
   alisa: {
@@ -17,9 +17,10 @@ const GULP_CONFIG = {
   },
   buildYbfUrl: ['./pages/**/ybf.js'],
   buildScssUrl: ['./**/*.scss'],
-  buildTsUrl: ['./**/*.ts']
+  buildTsUrl: ['./**/*.ts'],
+  appJsonFilePath: '../app.json',
 }
-let alisa, buildYbfUrl, buildScssUrl, buildTsUrl
+let alisa, buildYbfUrl, buildScssUrl, buildTsUrl, appJsonFilePath
 try {
   const path = require('path')
   let filePath = path.join(process.cwd(), './gulpconfig.js')
@@ -32,6 +33,7 @@ try {
   buildYbfUrl = gulpconfig.buildJsUrl
   buildScssUrl = gulpconfig.buildScssUrl
   buildTsUrl = gulpconfig.buildTsUrl
+  appJsonFilePath = gulpconfig.appJsonFilePath
 
 } catch (e) {
   // 文件别名
@@ -46,5 +48,6 @@ module.exports = {
   alisa: alisa,
   buildScssUrl: buildScssUrl,
   buildTsUrl: buildTsUrl,
-  buildYbfUrl: buildYbfUrl
+  buildYbfUrl: buildYbfUrl,
+  appJsonFilePath
 }

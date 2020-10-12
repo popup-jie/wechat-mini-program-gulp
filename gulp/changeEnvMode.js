@@ -13,9 +13,7 @@ function changeEnvMode(mode) {
     .replace(/}/g, '')
   const left = newFormat.split(':')[0].trim()
   fs.writeFile(filename, `export default { ${left} : '${mode || 'dev'}' }`, (e) => {
-    console.log('调整环境变量成功')
-
-    // 这里调用一次ts编译，就是不明白为什么动态改变.ts文件后不会自动执行
+    
     buildTypeScript({})
   })
 }

@@ -1,18 +1,17 @@
 
 const fs = require('fs')
 const path = require('path');
-
+const config = require('./config')
 /** 用于同步app.json 和routesConfig数据 */
 async function syncPage() {
 
-  const appJsonName = path.resolve(__dirname, '../app.json')
+  const appJsonName = path.join(process.cwd(), config.appJsonFilePath)
   const routesConfigName = path.resolve(__dirname, '../plugins/routesConfig.js')
   let appJsonFile = null
   try {
     appJsonFile = fs.readFileSync(appJsonName, 'utf8');
   } catch (e) {
-    appJsonFile = await syncReadFile(appJsonName, `{ "pages": [] }`
-    )
+    appJsonFile = await syncReadFile(appJsonName, `{ "pages": [] }`)
   }
 
   const appJsonnewFormat = appJsonFile
@@ -20,7 +19,6 @@ async function syncPage() {
     .replace(/}{/g, '},{');
   let appjson = JSON.parse(appJsonnewFormat)
 
-  // let routesConfigFile = fs.readFileSync(routesConfigName, 'utf-8')
   let routesConfigFile = await syncReadFile(routesConfigName, 'export default []')
 
   const routesNewFormat = routesConfigFile

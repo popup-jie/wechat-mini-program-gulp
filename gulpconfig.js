@@ -7,7 +7,7 @@
  * @Autor: popup
  * @Date: 2020-09-29 17:00:49
  * @LastEditors: popup
- * @LastEditTime: 2020-10-10 17:19:40
+ * @LastEditTime: 2020-10-12 17:30:33
  */
 
 
@@ -26,6 +26,9 @@ module.exports = {
   // 这里建议写好文件的路径，方便gulp减少文件的监听
 
   // 需要编译的scss文件，如果是abc.scss 则编译成abc.scss
-  buildScssUrl: ['./pages/**/*.scss', './components/**/*.scss']
+  buildScssUrl: ['./pages/**/*.scss', './components/**/*.scss'],
+  
+  // app.json路径 默认根目录
+  appJsonFilePath: './app.json',
 
 }

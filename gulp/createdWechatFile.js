@@ -35,6 +35,7 @@ function generateFile(event) {
   // d = d.split('\\')[d.length - 1]
   filePath = filePath.join('\\') + '\\index.js'
 
+  // 解决 git pull 执行后导致的代码被覆盖问题
   isFileExisted(filePath).then(res => {
     console.log('当前页面存在index.js')
   }).catch(() => {
