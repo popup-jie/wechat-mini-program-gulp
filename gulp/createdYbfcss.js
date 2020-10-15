@@ -10,7 +10,7 @@ const config = require('./config')
 
 // 编译scss文件
 function createdYbfcss(event) {
-  return gulp.src(config.buildScssUrl, '!pages/01-template/*.scss') // 需要编译的文件
+  return gulp.src(config.buildScssUrl, '!./pageTemplate/*.scss') // 需要编译的文件
     .pipe(plumber(function (path) {
       console.log(path)
       console.error('编译有误！！！，请注意文件')

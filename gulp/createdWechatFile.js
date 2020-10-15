@@ -28,10 +28,6 @@ function generateFile(event) {
   // 获取写入app.json 的文件，去掉\xxx\xx 的写反，反写为/xxx/xx
   let appjsonStr = str.substring(1, str.length - 1)
 
-  // console.log(appjsonStr)
-  // console.log(str)
-  console.log(event.path)
-
   appjsonStr = appjsonStr.replace(/\\/g, '/')
 
   let filePath = event.path.split('\\')
@@ -46,7 +42,7 @@ function generateFile(event) {
   }).catch(() => {
     generateJson(appjsonStr)
     generateRoute(appjsonStr)
-    return gulp.src('./pages/01-template/*')
+    return gulp.src('./pageTemplate/*')
       .pipe(plumber(function (path) {
         console.log(path)
         console.error('编译有误！！！，请注意文件')
@@ -67,12 +63,13 @@ function generateJson(pageUrl) {
       .replace(/(\r\n\t|\n|\r\t)/gm, '')
       .replace(/}{/g, '},{');
     let appjson = JSON.parse(newFormat)
-    if (appjson.pages.indexOf(`pages/${pageUrl}/index`) > -1) {
-      console.log('页面存在！, 无需重复写入')
-      return
-    }
+    let pages = appjson.pages
 
-    appjson.pages.push(`pages/${pageUrl}/index`)
+    if (pageUrl == '/') {
+      pages.indexOf(`pages/index`) > -1 ? '' : pages.push(`pages/index`)
+    } else {
+      pages.indexOf(`pages/${pageUrl}/index`) > -1 ? '' : pages.push(`pages/${pageUrl}/index`)
+    }
     fs.writeFile(input_file_path, JSON.stringify(appjson, null, "\t"), (e) => {
       console.log('app.json写入成功')
     })
@@ -89,14 +86,19 @@ function generateRoute(pageUrl) {
     .replace('export default', '')
     .replace(/}{/g, '},{');
   let appjson = JSON.parse(newFormat)
+
+  let equalPath = `pages/${pageUrl}/index`
+  if (pageUrl == '/') {
+    equalPath = `pages/index`
+  }
+
   appjson.forEach(page => {
-    if (page.path == `pages/${pageUrl}/index`) {
+    if (page.path == equalPath) {
       console.log('页面存在！, 无需重复写入')
       return
     }
   })
-
-  appjson.push({ "path": `pages/${pageUrl}/index` })
+  appjson.push({ "path": equalPath })
   appjson = JSON.stringify(appjson, null, "\t")
   appjson = 'export default ' + appjson
   fs.writeFile(filename, appjson, (e) => {
