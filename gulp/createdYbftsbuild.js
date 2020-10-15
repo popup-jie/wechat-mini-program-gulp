@@ -2,10 +2,13 @@ const gulp = require('gulp');
 const plumber = require('gulp-plumber'); // 报错日志
 const rename = require('gulp-rename') // 重命名
 const ts = require('gulp-typescript'); // ts编译
-const tsProject = ts.createProject('./tsconfig.json');
+
 const config = require('./config')
 const aliases = require('gulp-wechat-weapp-src-alisa'); // 目录别名重置
-
+let tsProject = null
+if (config.isTs) {
+  tsProject = ts.createProject('./tsconfig.json');
+}
 // 编译ts文件
 function buildTypeScript(event) {
   return gulp.src(['./**/*.ts', '!node_modules/**/*.ts'])

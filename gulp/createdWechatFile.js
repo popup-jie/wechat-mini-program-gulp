@@ -28,8 +28,9 @@ function generateFile(event) {
   // 获取写入app.json 的文件，去掉\xxx\xx 的写反，反写为/xxx/xx
   let appjsonStr = str.substring(1, str.length - 1)
 
-  console.log(appjsonStr)
-  console.log(str)
+  // console.log(appjsonStr)
+  // console.log(str)
+  console.log(event.path)
 
   appjsonStr = appjsonStr.replace(/\\/g, '/')
 
