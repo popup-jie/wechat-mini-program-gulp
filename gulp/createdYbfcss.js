@@ -2,7 +2,7 @@ const gulp = require('gulp');
 const sass = require('gulp-sass'); // sass编译
 const rename = require('gulp-rename') // 重命名
 const changed = require('gulp-changed') // 文件改动
-
+const path = require('path')
 const px2rpx = require('gulp-px2rpx'); // glup 将px单位转换成rpx
 const plumber = require('gulp-plumber'); // 报错日志
 const aliases = require('gulp-wechat-weapp-src-alisa'); // 目录别名重置
@@ -10,7 +10,10 @@ const config = require('./config')
 
 // 编译scss文件
 function createdYbfcss(event) {
-  return gulp.src(config.buildScssUrl, '!./pageTemplate/*.scss') // 需要编译的文件
+  let templateUrl = path.join(__dirname, 'pageTemplate/*.scss')
+  let _arr = config.buildScssUrl
+  _arr.push('!' + templateUrl)
+  return gulp.src(_arr) // 需要编译的文件
     .pipe(plumber(function (path) {
       console.log(path)
       console.error('编译有误！！！，请注意文件')
@@ -33,8 +36,7 @@ function createdYbfcss(event) {
     // 改动谁就编译谁
     .pipe(gulp.dest(function (file) { return file.base; }))
     .pipe(rename((path) => {
-      var d = event.base || 'pages'
-      console.log('编译完成文件：' + d + '\\' + path.dirname + '\\' + path.basename + '.scss')
+      console.log('编译完成scss文件：' + event.history)
     }))
 }
 

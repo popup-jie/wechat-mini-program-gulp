@@ -21,9 +21,8 @@ function buildTypeScript(event) {
     .pipe(tsProject())
     .pipe(gulp.dest(function (file) { return file.base; }))
     .pipe(rename((path) => {
-      // console.log()
-      var d = event.cwd || 'pages'
-      console.log(`编译完成文件：${d}\\${path.dirname}\\${path.basename}.js`)
+      var d = event.base || 'pages'
+      console.log('编译完成js文件：' + d + '\\' + path.dirname + '\\' + path.basename + '.scss')
     }))
 }
 

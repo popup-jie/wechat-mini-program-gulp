@@ -22,8 +22,7 @@ function createYbfPageTask(event) {
     // .pipe(changed('./pages')) //只编译改动的文件
     .pipe(gulp.dest(function (file) { return file.base; }))
     .pipe(rename((path) => {
-      var d = event.base || 'pages'
-      console.log('编译完成文件：' + d + '\\' + path.dirname + '\\' + path.basename + '.js')
+      console.log('编译完成js文件：' + event.history)
     }))
 }
 
