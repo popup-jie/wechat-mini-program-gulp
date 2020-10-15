@@ -2,18 +2,18 @@
   "name": "wechat-mini-gulp",
   "version": "1.0.4",
   "scripts": {
-    "sync": "gulp syncPage",
-    "dev": "gulp --NODE_ENV=dev",
-    "build": "gulp --NODE_ENV=pro",
-    "test": "gulp --NODE_ENV=test",
-    "clean": "gulp clean --NODE_ENV=pro"
+    "gulpsync": "gulp syncPage",
+    "gulpdev": "gulp --NODE_ENV=dev",
+    "gulpbuild": "gulp --NODE_ENV=pro",
+    "gulptest": "gulp --NODE_ENV=test",
+    "gulpclean": "gulp clean --NODE_ENV=pro"
   },
   "bin": {
     "wechat-gulp": "./link/link.js"
   },
   "author": "",
   "license": "ISC",
-  "dependencies": {
+  "devDependencies": {
     "commander": "^6.1.0",
     "fs-extra": "^9.0.1",
     "gulp": "^4.0.2",

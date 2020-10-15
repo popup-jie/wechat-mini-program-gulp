@@ -14,7 +14,6 @@ const createdFile = (map) => {
         let name = fileName.pop() // 文件名
         let file = fs.readFileSync(value[i], 'utf8');
         let newPath = path.join(_dst, '/', name)
-        console.log(newPath)
         fs.writeFile(newPath, file, (err) => {
           if (err) {
             console.log(err)
