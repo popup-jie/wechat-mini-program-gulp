@@ -3,6 +3,7 @@ const path = require('path');
 const fs = require('fs')
 const buildTypeScript = require('./createdYbftsbuild')
 const { syncReadFile } = require('./utils')
+const config = require('./config')
 
 async function changeEnvMode(mode) {
   const filename = path.resolve(__dirname, './env.js')
@@ -13,10 +14,13 @@ async function changeEnvMode(mode) {
     .replace(/,/g, '')
     .replace(/{/g, '')
     .replace(/}/g, '')
-  const left = newFormat.split(':')[0].trim().split('=')[1]
-  fs.writeFile(filename, `module.exports = {${left || 'env'} : '${mode || 'dev'}' }`, (e) => {
-
-    // buildTypeScript({})
+  let left = newFormat.split(':')[0].trim().split('=')[1]
+  left = left || 'env'
+  mode = mode || 'dev'
+  fs.writeFile(filename, `module.exports = {${left} : '${mode}' }`, (e) => {
+    if (config.isTs) {
+      buildTypeScript()
+    }
   })
 }
 

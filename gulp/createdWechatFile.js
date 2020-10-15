@@ -2,7 +2,8 @@ const fs = require('fs')
 const path = require('path');
 const gulp = require('gulp');
 const plumber = require('gulp-plumber'); // 报错日志
-const config = require('./config')
+const config = require('./config');
+const { resolve } = require('path');
 
 function isFileExisted(filePath) {
   return new Promise(function (resolve, reject) {
@@ -42,7 +43,8 @@ function generateFile(event) {
   }).catch(() => {
     generateJson(appjsonStr)
     generateRoute(appjsonStr)
-    return gulp.src('./pageTemplate/*')
+    let templateUrl = path.join(__dirname, 'pageTemplate/*')
+    return gulp.src(templateUrl)
       .pipe(plumber(function (path) {
         console.log(path)
         console.error('编译有误！！！，请注意文件')
@@ -91,13 +93,15 @@ function generateRoute(pageUrl) {
   if (pageUrl == '/') {
     equalPath = `pages/index`
   }
-
+  let isHas = false
   appjson.forEach(page => {
     if (page.path == equalPath) {
       console.log('页面存在！, 无需重复写入')
-      return
+      isHas = true
     }
   })
+
+  if (isHas) return
   appjson.push({ "path": equalPath })
   appjson = JSON.stringify(appjson, null, "\t")
   appjson = 'export default ' + appjson
