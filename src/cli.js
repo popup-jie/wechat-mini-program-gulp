@@ -1,13 +1,17 @@
+const fs = require('fs-extra')
+const path = require('path')
+const { getFileMap } = require('./getFileMap')
+const { createdFile } = require('./createdFile')
 exports.run = function (type, name) {
-  var exec = require('child_process').exec;
-  console.log(type)
-  var cmd = `npm run ${type}`;
-
-  exec(cmd, function (err, stdout, stderr) {
-    console.log(err)
-    console.log(stdout)
-    console.log(stderr)
-  });
-
-  console.log('文件已启动， crtl + y 结束进程')
+  try {
+    fs.readFileSync(path.join(process.cwd(), '/', 'app.json'), 'utf8')
+    console.log('正在拷贝目录...')
+    var pathName = path.resolve(__dirname, '../', 'copyFile');
+    let dirs = getFileMap(pathName)
+    createdFile(dirs)
+    console.log('文件已启动， crtl + y 结束进程')
+  } catch (e) {
+    console.log(`根目录下不存在app.json文件，请在小程序根目录操作`)
+    process.exit(1)
+  }
 }

@@ -11,9 +11,15 @@ program.on('--help', function () {
 });
 
 program
-  .command('run <name>')
+  .command('run <init>')
   .action((name, cmd) => {
-    wechartGulp.run(name, cmd)
+    let d = process.argv.slice(3)
+    if (d[0] !== 'init') {
+      console.log(`error: missing required argument 'init'`)
+      process.exit(1)
+    }
+
+    wechartGulp.run(cmd, name)
   })
 
 program.parse(process.argv);
