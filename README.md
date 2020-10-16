@@ -189,22 +189,12 @@ wx.$getPrevPage = () => {
 
 ### 确认弹窗confirm
 
-带取消和确定按钮，可执行配置，根据`<van-dialog>`
+带取消和确定按钮
 
 ```javascript
 // confirm 
 // return promise
 wx.$confirm = (options) =>{}
-```
-
-### 弹出框alert
-
-带确定按钮，可执行配置，根据`<van-dialog>`
-
-```javascript
-// alert 
-// return promise
-wx.$alert = (options) => {}
 ```
 
 ### 模态框toast
