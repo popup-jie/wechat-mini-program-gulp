@@ -19,11 +19,7 @@ const copyPackageJson = () => {
     delete gulpPackJson['devDependencies']['commander']
     delete gulpPackJson['devDependencies']['fs-extra']
 
-    if (nowPackJson['devDependencies']) {
-      Object.assign(nowPackJson['devDependencies'], gulpPackJson['devDependencies'])
-    } else {
-      nowPackJson['devDependencies'] = gulpPackJson['devDependencies']
-    }
+    Object.assign(nowPackJson['devDependencies'], gulpPackJson['dependencies'])
 
     fs.writeFile(path.join(process.cwd(), '/', 'package.json'), JSON.stringify(nowPackJson, null, "\t"), (err) => { })
 
