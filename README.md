@@ -1,5 +1,5 @@
 # wechat-mini-program-gulp
-利用`gulp+vscode`来开发小程序的一个小工具，内置扩展了一系列的`wx`全局api方法，
+利用`gulp+vscode`来开发小程序的一个小工具，内置扩展了一系列的`wx`全局api方法，支持自定义配置相对应的信息和别名等问题
 
 ## 安装方法：
 
@@ -55,91 +55,6 @@ shop-wechat
 
 ```
 
-## Gulp文件讲解
-
-位于`/gulp`下
-
-### 环境变量
-
-实现小程序向webpack开发一样，自动编译api环境
-
-```javascript
-// changeEnvMode.js
-// 手动改变 /config/env.ts文件，默认mode=dev 并执行ts编译
-function changeEnvMode(mode) {
-    // ...somecode
-    buildTypeScript({})
-}
-```
-
-此文件的作用大大提高了api的调整，避免开发人员进行 <font color="red">注释关闭</font> 相关代码
-
-### 监听ybf.js生成index.js
-
-```javascript
-// createYbfPageTask.js
-// 监听ybf文件，解决文件@引入,只支持监听/pages目录下，并生成相对应的index.js，
-function createYbfPageTask(event) {
-	// ...somecode 
-}
-```
-
-### 监听scss文件生成index.wxss
-
-```javascript
-// createdYbfcss.js
-// 该函数支持px转rpx 支持文件@引入，支持监听component和pages下的文件index.scss，生成相对应的index.scss
-function createdYbfcss(event) {
-    // ...somecode 
-}
-```
-
-### 监听ts文件生成相对应的js
-
-```javascript
-// buildTypeScript.js
-// 监听当前目录下所有ts文件，改动一个ts文件后，所有ts文件都会自动编译
-function buildTypeScript(event) {
-	// ...somecode 
-}
-```
-
-### 删除文件存在的console.log
-
-```javascript
-// gulpCleanConsole.js
-function gulpCleanConsole() {
-	// ...somecode
-}
-```
-
-### 监听新建ybf.js文件<font color="green">(此文件是重点)</font>
-
-```javascript
-// createdWechatFile.js
-// 监听pages下所有文件的ybf.js生成，如果生成创建wxss,wxml,scss,ybf.js,json文件
-function generateFile(event) {
-    
-    generateJson()
-    generateRoute()
-}
-// 向app.json文件内部pages下新增页面路由
-function generateJson(pageUrl) {    
-}
-// 向/toulPlugins/routesConfig.js做路由同步
-function generateRoute(pageUrl) {}
-```
-
-在需要新建`小程序page`的时候，在相对应文件夹下，新增**`ybf.js`**文件就会新增创建相对应的小程序文件及路由
-
-### 同步app.json的pages
-
-```javascript
-// synsPages.js
-// 该文件只为了同步app.json下pages对象，为了后期扩展进行路由拦截配置等问题
-function syncPage() {}
-```
-
 ## 使用全局方法
 
 在app.js下面引入
@@ -151,102 +66,66 @@ import './toulPlugins/index'
 
 ## 内置提供全局wx方法
 
-文件位于`/toulPlugins/extendWxApi`
+### api路由方法
 
-### routerHandle方法
+将微信方法做了二次封装，扩展了相对应的`query`和`params`写法
 
-此方法主要扩展了小程序支持$router方法，支持`$router.go`，`$router.push`，`$router.replace` 使其支持params和query传参
-
-```javascript
-// /toulPlugins/extendWxApi.js
-// 模仿vue路由 push go replace实现
-import routerHandle from './routerHandle'
-// 路由处理
-wx.$router = routerHandle()
-
-// /toulPlugins/routerHandle.js
-function routerHandle() {
-	return {
-        go(num) { ...somecode },
-        replace(option) { ...somecode },
-        push(option) {},
-        switchTab(option) {},
-        // 将传入的option调整为调整配置
-        urlPathToObject() {
-            // 主要将要调整的路由放置，当前的页面的$toPageOptions里
-            // ... someCode
-            wx.$getNowPage().$toPageOptions = Object.assign({}, op, { type })
-        }
-}
+```js
+wx.$router.push // 类似vue的vue.router.push
+wx.$router.replace // 类似vue的vue.router.replace
+wx.$router.switchTab  // 对应微信tab组件的switchTab方法
 ```
 
-### urlPathToObject方法
+`wx.$router.push`和`wx.$router.replace`方法都支持传入的参数对象或者字符串，如下
 
-此方法只是对当前需要进行跳转的路由进行一次处理，并复制到当前`pages`的`$toPageOptions`里
+````js
+// 参数是字符串
+wx.$router.push('/pages/index/index')
 
-```javascript
-// /toulPlugins/routerHandle.js
-function routerHandle(self) {
-     return {
-         // ..somecode
-		// 路由格式为对象，为防止传入是字符串，转变成路由对象
-     	urlPathToObject(op, type) {
-            return new Promise((resolve, reject) => {
-                if (isObject(op)) {
-                    if (!op.url) {
-                        wx.$toast('url参数为必填')
-                        reject()
-                    }
-                    this.nowPathIsHasRoute(op.url).then(() => {
-                        wx.$getNowPage().$toPageOptions = Object.assign({}, op, { type })
-                        resolve()
-                    }).catch(() => { })
-                } else {
-                    this.nowPathIsHasRoute(op).then(() => {
-                        wx.$getNowPage().$toPageOptions = {
-                            url: op,
-                            type,
-                        }
-                        resolve()
-                    }).catch(() => { })
-                }
-            })
-        }
-     }，
-    // 判断当前路由存不存在
-    nowPathIsHasRoute(url) {
-      return new Promise((resolve, reject) => {
-        const d = routes.filter(ro => {
-          return ro.path === url.split('?')[0].replace(/^\//, '')
-        })
-        if (d.length == 0) {
-          self.$toast('路由不存在，请检查app.json文件是否存在')
-          reject()
-        }
-      })
-    }
-}
+// 参数是对象
+wx.$router.push({
+    url: '/pages/index/index',
+    params: {},
+    query: {}
+    events: {} // 对应微信的派发事件
+})
+
+````
+
+上面的方法传参，在每个页面内部可以通过**`this.__query`**获取到传过来的`query`，**`this._params`**获取传过来的`params`
+
+```js
+// 这种写法也支持 this.__params
+wx.$router.push('/pages/index/index?id=1')
 ```
 
-在对路由拦截的时候，向`routerProxy`传递了`next`方法并将*`this`*指向当前的`self->pages`对象，这样在处理路由拦截进行`next`方法或者`next(false)`方法的时候，就可以进行页面的直接跳转
+<font color="red">特别注意：!!!!!!</font>
 
-### urlpipeExec方法
+如果项目中需要进行分享处理，需要单独在`onLoad`拿到传入的参数，具体详情看
 
-`urlpipeExec`方法就是对`$toPageOptions`变量进行数据处理，
+微信小程序页面路由(<https://developers.weixin.qq.com/miniprogram/dev/framework/app-service/route.html>)
 
-```javascript
-// 实际执行函数跳转的地方
-wx.$urlpipeExec = () => {
-  const option = wx.$toPageOptions
-  let successHanlde = option.success || noop
+因为分享进来的代码，并没有经过`wx.$router.xxx`方法的处理
 
-  wx[option.type]({
-    url: option.url,
-    success: successHanlde,
-    fail: option.error || option.fail || noop,
-    events: option.events || noop
-  })
-}
+### wxml页面路由方法
+
+扩展了在`wxml`页面上面直接调用`$toPage`方法，可以直接调用`wx.$router.xxx`，
+
+需要在标签上传入相对应的`data-xxx`
+
+`data-url` 需要跳转的路由地址
+
+`data-totype` 跳转的方法，支持： 
+
+* redirect 或 replace
+* switchTab
+* reLaunch
+* push 默认
+
+具体使用如下
+
+```html
+<view catch:tap="$goPage" data-url="/pages/mine/order/index?userType=isC&orderStatus=4" data-totype="push"></view>
 ```
 
 ### 上传图片
@@ -342,6 +221,50 @@ wx.$toast = (msg, cb) => {}
 wx.$copy = (msg) => {}
 ```
 
+### once函数
+
+```
+wx.$once(fn)
+```
+
+
+
+## 默认配置
+
+文件位于：`gulp/config.js`距离
+
+也可以自己扩展配置，需要在项目根目录下，新增`gulpconfig.js`文件，在进行更改
+
+```js
+// gulpconfig.js
+
+// 以下信息为内置默认配置
+module.exports = {
+  // 路径别名
+  alisa: {
+    '@plugins': "./plugins",
+    '@scss': './scss',
+    '@utils': './utils',
+    '@api': './api',
+    '@config': './config',
+    '@images': './images'
+  },
+  // 需要编译的别名js文件，本工具默认监听ybf.js
+  buildJsUrl: ['./pages/**/ybf.js'],
+  // 这里建议写好文件的路径，方便gulp减少文件的监听
+    
+  // 需要编译的scss文件，如果是abc.scss 则编译成abc.scss
+  buildScssUrl: ['./pages/**/*.scss', './components/**/*.scss'],
+  
+  // ts编译
+  buildTsUrl: ['./**/*.ts'],
+  // app.json路径 默认根目录
+  appJsonFilePath: './app.json',
+  // 是否开启ts编译
+  isTs: false
+}
+```
+
 ## routesConfig配置
 
 该文件主要为了配置`wx.$beforeRouter`和`wx.$afterRouter `而配置的文件
@@ -359,6 +282,91 @@ export default [
     	}
     }
 ]
+```
+
+## Gulp文件讲解
+
+位于`/gulp`下
+
+### 环境变量
+
+实现小程序向webpack开发一样，自动编译api环境
+
+```javascript
+// changeEnvMode.js
+// 手动改变 /config/env.ts文件，默认mode=dev 并执行ts编译
+function changeEnvMode(mode) {
+    // ...somecode
+    buildTypeScript({})
+}
+```
+
+此文件的作用大大提高了api的调整，避免开发人员进行 <font color="red">注释关闭</font> 相关代码
+
+### 监听ybf.js生成index.js
+
+```javascript
+// createYbfPageTask.js
+// 监听ybf文件，解决文件@引入,只支持监听/pages目录下，并生成相对应的index.js，
+function createYbfPageTask(event) {
+	// ...somecode 
+}
+```
+
+### 监听scss文件生成index.wxss
+
+```javascript
+// createdYbfcss.js
+// 该函数支持px转rpx 支持文件@引入，支持监听component和pages下的文件index.scss，生成相对应的index.scss
+function createdYbfcss(event) {
+    // ...somecode 
+}
+```
+
+### 监听ts文件生成相对应的js
+
+```javascript
+// buildTypeScript.js
+// 监听当前目录下所有ts文件，改动一个ts文件后，所有ts文件都会自动编译
+function buildTypeScript(event) {
+	// ...somecode 
+}
+```
+
+### 删除文件存在的console.log
+
+```javascript
+// gulpCleanConsole.js
+function gulpCleanConsole() {
+	// ...somecode
+}
+```
+
+### 监听新建ybf.js文件<font color="green">(此文件是重点)</font>
+
+```javascript
+// createdWechatFile.js
+// 监听pages下所有文件的ybf.js生成，如果生成创建wxss,wxml,scss,ybf.js,json文件
+function generateFile(event) {
+    
+    generateJson()
+    generateRoute()
+}
+// 向app.json文件内部pages下新增页面路由
+function generateJson(pageUrl) {    
+}
+// 向/toulPlugins/routesConfig.js做路由同步
+function generateRoute(pageUrl) {}
+```
+
+在需要新建`小程序page`的时候，在相对应文件夹下，新增**`ybf.js`**文件就会新增创建相对应的小程序文件及路由
+
+### 同步app.json的pages
+
+```javascript
+// synsPages.js
+// 该文件只为了同步app.json下pages对象，为了后期扩展进行路由拦截配置等问题
+function syncPage() {}
 ```
 
 ## 

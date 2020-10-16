@@ -4,12 +4,12 @@
  * @Autor: popup
  * @Date: 2020-08-25 16:23:12
  * @LastEditors: popup
- * @LastEditTime: 2020-10-12 19:51:35
+ * @LastEditTime: 2020-10-16 15:29:22
  */
 const GULP_CONFIG = {
   alisa: {
     '@plugins': "./plugins",
-    '@scss': './static/scss',
+    '@scss': './scss',
     '@utils': './utils',
     '@api': './api',
     '@config': './config',
