@@ -24,7 +24,7 @@ const copyPackageJson = () => {
     fs.writeFile(path.join(process.cwd(), '/', 'package.json'), JSON.stringify(nowPackJson, null, "\t"), (err) => { })
 
   } catch (e) {
-    console.log(e)
+    // console.log(e)
     let readable = fs.createReadStream(path.join(__dirname, '../package.json'));
     let writable = fs.createWriteStream(path.join(process.cwd(), '/', 'package.json'));
     readable.pipe(writable)

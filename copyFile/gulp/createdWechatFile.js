@@ -81,7 +81,7 @@ function generateJson(pageUrl) {
 
 // 编译routesConfig.js
 function generateRoute(pageUrl) {
-  const filename = path.resolve(__dirname, '../plugins/routesConfig.js')
+  const filename = path.resolve(__dirname, '../toulPlugins/routesConfig.js')
   const file = fs.readFileSync(filename, 'utf8');
   const newFormat = file
     .replace(/(\r\n\t|\n|\r\t)/gm, '')

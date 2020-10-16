@@ -4,7 +4,7 @@
  * @Autor: popup
  * @Date: 2020-08-25 16:23:12
  * @LastEditors: popup
- * @LastEditTime: 2020-10-12 19:51:35
+ * @LastEditTime: 2020-10-16 16:03:25
  */
 const GULP_CONFIG = {
   alisa: {
@@ -19,7 +19,7 @@ const GULP_CONFIG = {
   buildScssUrl: ['./**/*.scss'],
   buildTsUrl: ['./**/*.ts'],
   appJsonFilePath: './app.json',
-  routesConfigName: './plugins/routesConfig.js', //routesConfig.js
+  routesConfigName: './toulPlugins/routesConfig.js', //routesConfig.js
   isTs: false
 }
 let alisa, buildYbfUrl, buildScssUrl, buildTsUrl, appJsonFilePath, isTs, routesConfigName
