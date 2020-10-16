@@ -9,7 +9,7 @@
     "gulpclean": "gulp clean --NODE_ENV=pro"
   },
   "bin": {
-    "wechat-gulp-test": "./link/link.js"
+    "wechat-gulp": "./link/link.js"
   },
   "author": "",
   "license": "ISC",
