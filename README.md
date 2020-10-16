@@ -30,7 +30,7 @@ npm run gulpsync
 ## 项目目录
 
 ```markdown
-shop-wechat
+根目录
 ├── gulp					// gulp任务包
 |   |—— pageTemplate		// 页面模板文件
 |   |—— cleanplugIn 		// 清空console-gulp插件
