@@ -177,6 +177,18 @@ wx.$wxUploadFile = (imageUrl) => {
   })
 }
 
+// 一次使用
+wx.$once = (fn) => {
+  let flg = true
+  return function () {
+    if (flg) {
+      flg = false
+      fn.apply(fn, arguments)
+      fn = null;
+    }
+  }
+}
+
 // 路由进入之前
 wx.$beforeRouter = (from, to, next) => {
   if (from.beforeRouter) {
