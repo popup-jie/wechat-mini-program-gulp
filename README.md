@@ -66,6 +66,10 @@ import './toulPlugins/index'
 
 ## 内置提供全局wx方法
 
+### 获取运行变量
+
+该文件位于`/gulp/env.js`，对外导出`env`
+
 ### api路由方法
 
 将微信方法做了二次封装，扩展了相对应的`query`和`params`写法
