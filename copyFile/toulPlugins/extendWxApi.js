@@ -1,8 +1,6 @@
 import routerHandle from './routerHandle'
 import routes from './routesConfig'
 
-import config from '../config/index'
-
 wx.$isCanClick = true // 重复点击
 wx.$toPageOptions = {} // 保存需要跳转的页面对象
 

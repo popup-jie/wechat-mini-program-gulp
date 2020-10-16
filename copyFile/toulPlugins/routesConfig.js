@@ -1,5 +1,1 @@
-export default [
-	{
-		"path": "pages/index"
-	}
-]
+export default []
