@@ -161,12 +161,11 @@ wx.$copy = (str) => {
 wx.$wxUploadFile = (imageUrl) => {
   return new Promise((resolve, reject) => {
     wx.uploadFile({
-      url: `${config.uploadApi}/file/upload/`,
+      url: 'www.baidu.com', // 修改你的url地址
       filePath: imageUrl,
       name: 'file',
       formData: {
         file: imageUrl,
-        createdBy: getApp().globalData.ybfMerchantInfo.weixinNo,
       },
       success(res) {
         resolve(JSON.parse(res.data))
@@ -179,21 +178,15 @@ wx.$wxUploadFile = (imageUrl) => {
 }
 
 // 路由进入之前
-wx.$beforeRouter = (to, next) => {
-  const {
-    oldRoute,
-    toRoute
-  } = wx.$getRoute(to, wx.$getNowPage().route)
-
-  if (oldRoute.beforeRouter) {
-    oldRoute.beforeRouter && oldRoute.beforeRouter(oldRoute, toRoute)
+wx.$beforeRouter = (from, to, next) => {
+  if (from.beforeRouter) {
+    from.beforeRouter && from.beforeRouter(from, to)
   } else {
-    if (toRoute.meta && toRoute.meta.noPage) {
+    if (to.meta && to.meta.noPage) {
       wx.$toast('页面暂未开发')
       next(false)
       return
     }
-
     next()
   }
 }

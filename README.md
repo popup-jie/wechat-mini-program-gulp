@@ -1,7 +1,7 @@
 # wechat-mini-program-gulp
-利用`gulp+vscode`来开发小程序的一个小工具，内置扩展了一系列的`wx`全局api方法
+利用`gulp+vscode`来开发小程序的一个小工具，内置扩展了一系列的`wx`全局api方法，
 
-## 使用方法：
+## 安装方法：
 
 ```shell
 # 全局安装
@@ -10,8 +10,11 @@ npm install -g wechat-mini-gulp
 wechat-gulp run init
 # 安装依赖
 npm install
-# 根目录运行
+```
 
+## 运行
+
+```shell
 #开发环境
 npm run gulpdev
 #正式环境
@@ -52,3 +55,310 @@ shop-wechat
 
 ```
 
+## Gulp文件讲解
+
+位于`/gulp`下
+
+### 环境变量
+
+实现小程序向webpack开发一样，自动编译api环境
+
+```javascript
+// changeEnvMode.js
+// 手动改变 /config/env.ts文件，默认mode=dev 并执行ts编译
+function changeEnvMode(mode) {
+    // ...somecode
+    buildTypeScript({})
+}
+```
+
+此文件的作用大大提高了api的调整，避免开发人员进行 <font color="red">注释关闭</font> 相关代码
+
+### 监听ybf.js生成index.js
+
+```javascript
+// createYbfPageTask.js
+// 监听ybf文件，解决文件@引入,只支持监听/pages目录下，并生成相对应的index.js，
+function createYbfPageTask(event) {
+	// ...somecode 
+}
+```
+
+### 监听scss文件生成index.wxss
+
+```javascript
+// createdYbfcss.js
+// 该函数支持px转rpx 支持文件@引入，支持监听component和pages下的文件index.scss，生成相对应的index.scss
+function createdYbfcss(event) {
+    // ...somecode 
+}
+```
+
+### 监听ts文件生成相对应的js
+
+```javascript
+// buildTypeScript.js
+// 监听当前目录下所有ts文件，改动一个ts文件后，所有ts文件都会自动编译
+function buildTypeScript(event) {
+	// ...somecode 
+}
+```
+
+### 删除文件存在的console.log
+
+```javascript
+// gulpCleanConsole.js
+function gulpCleanConsole() {
+	// ...somecode
+}
+```
+
+### 监听新建ybf.js文件<font color="green">(此文件是重点)</font>
+
+```javascript
+// createdWechatFile.js
+// 监听pages下所有文件的ybf.js生成，如果生成创建wxss,wxml,scss,ybf.js,json文件
+function generateFile(event) {
+    
+    generateJson()
+    generateRoute()
+}
+// 向app.json文件内部pages下新增页面路由
+function generateJson(pageUrl) {    
+}
+// 向/toulPlugins/routesConfig.js做路由同步
+function generateRoute(pageUrl) {}
+```
+
+在需要新建`小程序page`的时候，在相对应文件夹下，新增**`ybf.js`**文件就会新增创建相对应的小程序文件及路由
+
+### 同步app.json的pages
+
+```javascript
+// synsPages.js
+// 该文件只为了同步app.json下pages对象，为了后期扩展进行路由拦截配置等问题
+function syncPage() {}
+```
+
+## 使用全局方法
+
+在app.js下面引入
+
+```javascript
+// 导入扩展方法
+import './toulPlugins/index'
+```
+
+## 内置提供全局wx方法
+
+文件位于`/toulPlugins/extendWxApi`
+
+### routerHandle方法
+
+此方法主要扩展了小程序支持$router方法，支持`$router.go`，`$router.push`，`$router.replace` 使其支持params和query传参
+
+```javascript
+// /toulPlugins/extendWxApi.js
+// 模仿vue路由 push go replace实现
+import routerHandle from './routerHandle'
+// 路由处理
+wx.$router = routerHandle()
+
+// /toulPlugins/routerHandle.js
+function routerHandle() {
+	return {
+        go(num) { ...somecode },
+        replace(option) { ...somecode },
+        push(option) {},
+        switchTab(option) {},
+        // 将传入的option调整为调整配置
+        urlPathToObject() {
+            // 主要将要调整的路由放置，当前的页面的$toPageOptions里
+            // ... someCode
+            wx.$getNowPage().$toPageOptions = Object.assign({}, op, { type })
+        }
+}
+```
+
+### urlPathToObject方法
+
+此方法只是对当前需要进行跳转的路由进行一次处理，并复制到当前`pages`的`$toPageOptions`里
+
+```javascript
+// /toulPlugins/routerHandle.js
+function routerHandle(self) {
+     return {
+         // ..somecode
+		// 路由格式为对象，为防止传入是字符串，转变成路由对象
+     	urlPathToObject(op, type) {
+            return new Promise((resolve, reject) => {
+                if (isObject(op)) {
+                    if (!op.url) {
+                        wx.$toast('url参数为必填')
+                        reject()
+                    }
+                    this.nowPathIsHasRoute(op.url).then(() => {
+                        wx.$getNowPage().$toPageOptions = Object.assign({}, op, { type })
+                        resolve()
+                    }).catch(() => { })
+                } else {
+                    this.nowPathIsHasRoute(op).then(() => {
+                        wx.$getNowPage().$toPageOptions = {
+                            url: op,
+                            type,
+                        }
+                        resolve()
+                    }).catch(() => { })
+                }
+            })
+        }
+     }，
+    // 判断当前路由存不存在
+    nowPathIsHasRoute(url) {
+      return new Promise((resolve, reject) => {
+        const d = routes.filter(ro => {
+          return ro.path === url.split('?')[0].replace(/^\//, '')
+        })
+        if (d.length == 0) {
+          self.$toast('路由不存在，请检查app.json文件是否存在')
+          reject()
+        }
+      })
+    }
+}
+```
+
+在对路由拦截的时候，向`routerProxy`传递了`next`方法并将*`this`*指向当前的`self->pages`对象，这样在处理路由拦截进行`next`方法或者`next(false)`方法的时候，就可以进行页面的直接跳转
+
+### urlpipeExec方法
+
+`urlpipeExec`方法就是对`$toPageOptions`变量进行数据处理，
+
+```javascript
+// 实际执行函数跳转的地方
+wx.$urlpipeExec = () => {
+  const option = wx.$toPageOptions
+  let successHanlde = option.success || noop
+
+  wx[option.type]({
+    url: option.url,
+    success: successHanlde,
+    fail: option.error || option.fail || noop,
+    events: option.events || noop
+  })
+}
+```
+
+### 上传图片
+
+```javascript
+// pages.js
+// 调用chooseImage后，返回来历史路径
+wx.$wxUploadFile(tempFilePaths[0]).then(obj => {})
+// 上传图片
+wx.$wxUploadFile = (imageUrl) => {
+}
+```
+
+### 节流函数
+
+```javascript
+wx.$YBFThrottle = (cb, delay = 300) => {
+  const nowPage = wx.$getNowPage()
+  if (!nowPage.isCanClick) return
+  nowPage.isCanClick = false
+  cb && cb()
+
+  setTimeout(() => {
+    nowPage.isCanClick = true
+  }, delay)
+}
+```
+
+### 全局路由拦截处理
+
+```javascript
+// /toulPlugins/extendWxApi.js
+// 路由进入之前
+wx.$beforeRouter = (from, to, next) => {
+    // ...someCode
+}
+
+// 路由进入之后
+wx.$afterRouter = (oldRoute, toRoute) => {
+    // ...code
+}
+```
+
+### 获取当前页面信息
+
+```javascript
+// 拿到当前页面数据
+wx.$getNowPage = () => {
+    // ...code
+}
+```
+
+### 获取上一页信息
+
+```javascript
+// 拿到上一前页面数据
+wx.$getPrevPage = () => {
+  // ...code
+}
+```
+
+### 确认弹窗confirm
+
+带取消和确定按钮，可执行配置，根据`<van-dialog>`
+
+```javascript
+// confirm 
+// return promise
+wx.$confirm = (options) =>{}
+```
+
+### 弹出框alert
+
+带确定按钮，可执行配置，根据`<van-dialog>`
+
+```javascript
+// alert 
+// return promise
+wx.$alert = (options) => {}
+```
+
+### 模态框toast
+
+```javascript
+// return promise
+wx.$toast = (msg, cb) => {}
+```
+
+### 复制copy
+
+```javascript
+// return void
+wx.$copy = (msg) => {}
+```
+
+## routesConfig配置
+
+该文件主要为了配置`wx.$beforeRouter`和`wx.$afterRouter `而配置的文件
+
+ 文件位于`./toulPlugins/routesConfig.js`
+
+例如：
+
+```javascript
+export default [
+    {
+        path: 'pages/index/index' // app.json 相对应的 pages下的路径
+        meta: {
+        	noPage: true  // 提示 页面暂未开发
+    	}
+    }
+]
+```
+
+## 

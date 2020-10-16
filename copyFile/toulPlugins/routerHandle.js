@@ -26,25 +26,31 @@ function routerHandle() {
     replace(option) {
       wx.$YBFThrottle(() => {
         this.urlPathToObject(option, 'redirectTo').then(() => {
-          wx.$beforeRouter(option, wx.$next)
+          this.goNext(to, wx.$next)
         })
       }, 0)
     },
     push(option) {
       wx.$YBFThrottle(() => {
         this.urlPathToObject(option, 'navigateTo').then(() => {
-          wx.$beforeRouter(option, wx.$next)
+          this.goNext(to, wx.$next)
         })
       }, 0)
     },
     switchTab(option) {
       wx.$YBFThrottle(() => {
         this.urlPathToObject(option, 'switchTab').then(() => {
-          wx.$beforeRouter(option, wx.$next)
+          this.goNext(to, wx.$next)
         })
       }, 0)
     },
-
+    goNext(to, next) {
+      const {
+        oldRoute,
+        toRoute
+      } = wx.$getRoute(to, wx.$getNowPage().route)
+      wx.$beforeRouter(oldRoute, toRoute, next)
+    },
     // 路由格式为对象，为防止传入是字符串，转变成路由对象
     urlPathToObject(op, type) {
       return new Promise((resolve, reject) => {
