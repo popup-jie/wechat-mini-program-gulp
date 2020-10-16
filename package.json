@@ -9,13 +9,15 @@
     "gulpclean": "gulp clean --NODE_ENV=pro"
   },
   "bin": {
-    "wechat-gulp": "./link/link.js"
+    "wechat-gulp-test": "./link/link.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "commander": "^6.1.0",
-    "fs-extra": "^9.0.1",
+    "fs-extra": "^9.0.1"
+  },
+  "devDependencies": {
     "gulp": "^4.0.2",
     "gulp-changed": "^4.0.2",
     "gulp-plumber": "^1.2.1",

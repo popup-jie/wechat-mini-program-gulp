@@ -16,10 +16,12 @@ const copyPackageJson = () => {
       .replace(/(\r\n\t|\n|\r\t)/gm, '')
       .replace(/}{/g, '},{');
     let gulpPackJson = JSON.parse(readableFormat)
-    delete gulpPackJson['devDependencies']['commander']
-    delete gulpPackJson['devDependencies']['fs-extra']
+    delete gulpPackJson['dependencies']['commander']
+    delete gulpPackJson['dependencies']['fs-extra']
 
-    Object.assign(nowPackJson['devDependencies'], gulpPackJson['dependencies'])
+    Object.assign(nowPackJson['devDependencies'], gulpPackJson['devDependencies'])
+
+    // console.log(nowPackJson)
 
     fs.writeFile(path.join(process.cwd(), '/', 'package.json'), JSON.stringify(nowPackJson, null, "\t"), (err) => { })
 
