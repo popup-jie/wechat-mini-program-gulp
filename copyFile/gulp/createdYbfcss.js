@@ -19,7 +19,7 @@ function createdYbfcss(event) {
       console.error('编译有误！！！，请注意文件')
       console.error('\n重启完毕')
     }))
-    .pipe(aliases(config.alisa))
+    .pipe(aliases(config.alias))
     .pipe(px2rpx({
       screenWidth: 750, // 设计稿屏幕, 默认750
       wxappScreenWidth: 750, // 微信小程序屏幕, 默认750

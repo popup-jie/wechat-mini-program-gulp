@@ -235,7 +235,7 @@ wx.$once(fn)
 // 以下信息为内置默认配置
 module.exports = {
   // 路径别名
-  alisa: {
+  alias: {
     '@plugins': "./plugins",
     '@scss': './scss',
     '@utils': './utils',

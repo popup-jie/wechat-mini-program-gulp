@@ -13,7 +13,7 @@ function createYbfPageTask(event) {
       console.error('编译有误！！！，请注意文件')
       console.error('\n重启完毕')
     }))
-    .pipe(aliases(config.alisa))
+    .pipe(aliases(config.alias))
 
     .pipe(rename((path) => {
       path.basename = 'index'

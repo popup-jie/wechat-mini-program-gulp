@@ -17,7 +17,7 @@ function buildTypeScript(event) {
       console.error('编译有误！！！，请注意文件')
       console.log('\n重启完毕')
     }))
-    .pipe(aliases(config.alisa))
+    .pipe(aliases(config.alias))
     .pipe(tsProject())
     .pipe(gulp.dest(function (file) { return file.base; }))
     .pipe(rename((path) => {

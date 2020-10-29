@@ -8,7 +8,7 @@ const config = require('./config')
 function gulpCleanConsole() {
   return gulp.src(['./app.js','./pages/**/*.js', '!node_modules/**/*.js'])
     .pipe(cleanplugIn())
-    .pipe(aliases(config.alisa))
+    .pipe(aliases(config.alias))
     .pipe(rename((path) => {
       if (path.basename == 'ybf') {
         path.basename = 'index'
