@@ -70,6 +70,27 @@ import './toulPlugins/index'
 
 该文件位于`/gulp/env.js`，对外导出`env`
 
+### watch和computed方法
+
+```javascript
+Page({
+    watch: {
+        getWatch(newVal) {
+            if(newVal) {
+                console.log(...)
+            }
+        }
+    },
+    computed: {
+        getComputed() {
+            return this.data.xxx
+        }
+    }
+})
+```
+
+
+
 ### api路由方法
 
 将微信方法做了二次封装，扩展了相对应的`query`和`params`写法
