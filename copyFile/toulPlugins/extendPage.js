@@ -21,6 +21,15 @@ const pageExtend = Page => {
         wx.$afterRouter(prevRoute, wx.$getNowPage())
       }
 
+
+      if (this.computed) {
+        computed(this, this.computed)
+      }
+
+      if (this.watch) {
+        watch(this, this.watch)
+      }
+
       // 执行一次globalData数据代理
       // if (!getApp().globalData.isInit) {
       // getApp().globalData.isInit = true
@@ -68,6 +77,64 @@ const pageExtend = Page => {
 
     return Page(object)
   }
+}
+
+
+function computed(ctx, obj) {
+  let keys = Object.keys(obj)
+  let dataKeys = Object.keys(ctx.data)
+  dataKeys.forEach(dataKey => {
+    defineReactive(ctx.data, dataKey, ctx.data[dataKey])
+  })
+  let firstComputedObj = keys.reduce((prev, next) => {
+    ctx.data.$target = function () {
+      ctx.setData({ [next]: obj[next].call(ctx) })
+    }
+    // 手动读取一次变量，触发对象的get方法
+    prev[next] = obj[next].call(ctx)
+    ctx.data.$target = null
+    return prev
+  }, {})
+
+  ctx.setData(firstComputedObj)
+
+  Object.assign(ctx.data, firstComputedObj)
+}
+
+function watch(ctx, obj) {
+  Object.keys(obj).forEach(key => {
+    defineReactive(ctx.data, key, ctx.data[key], function (old, newvalue) {
+      obj[key].call(ctx, old, newvalue)
+    })
+  })
+}
+
+function defineReactive(data, key, val, fn) {
+  let subs = data['$' + key] || [] // 新增
+  Object.defineProperty(data, key, {
+    configurable: true,
+    enumerable: true,
+    get: function () {
+      if (data.$target) {
+        subs.push(data.$target)
+        data['$' + key] = subs
+      }
+      return val
+    },
+    set: function (newVal) {
+      if (newVal === val) return
+      fn && fn(val, newVal)
+
+      // 每一次设置值都执行sub？
+      if (subs.length) {
+        // 用 setTimeout 因为此时 this.data 还没更新
+        setTimeout(() => {
+          subs.forEach(sub => sub())
+        }, 0)
+      }
+      val = newVal
+    },
+  })
 }
 
 
