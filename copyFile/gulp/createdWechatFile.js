@@ -3,7 +3,6 @@ const path = require('path');
 const gulp = require('gulp');
 const plumber = require('gulp-plumber'); // 报错日志
 const config = require('./config');
-const { resolve } = require('path');
 
 function isFileExisted(filePath) {
   return new Promise(function (resolve, reject) {
