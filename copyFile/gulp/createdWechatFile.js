@@ -23,36 +23,29 @@ function isFileExisted(filePath) {
 
 // 生成页面文件的方法
 function generateFile(event) {
-  // windows没问题，可能需要排除一下mac的
-  var str = event.path.match(/pages(\S*)ybf.js/)[1];
 
-  // 获取写入app.json 的文件，去掉\xxx\xx 的写反，反写为/xxx/xx
-  let appjsonStr = str.substring(1, str.length - 1)
+  let parentPath = path.resolve(event.path, '../')
+  let indexFile = path.resolve(parentPath, './index.js')
 
-  appjsonStr = appjsonStr.replace(/\\/g, '/')
-
-  let indexFile = path.resolve(event.path, '../', './index.js')
-
-  // 解决 git pull 执行后导致的代码被覆盖问题
   isFileExisted(indexFile).then(res => {
     console.log('当前页面存在index.js')
   }).catch(() => {
-    generateJson(appjsonStr)
-    generateRoute(appjsonStr)
-    let templateUrl = path.join(__dirname, 'pageTemplate/*')
-    return gulp.src(templateUrl)
-      .pipe(plumber(function (path) {
+    generateJson(parentPath)
+    generateRoute(parentPath)
+    const pagePath = path.join(__dirname, '../pages/01-template/*')
+    return gulp.src(pagePath)
+      .pipe(plumber((path) => {
         console.log(path)
         console.error('编译有误！！！，请注意文件')
         console.log('\n重启完毕')
       }))
-      .pipe(gulp.dest(`./pages/${str}`))
+      .pipe(gulp.dest(`${parentPath}`))
   })
 }
 
 // 编译app.json
-function generateJson(pageUrl) {
-  const filename = path.join(process.cwd(), config.appJsonFilePath)
+const generateJson = (parentPath) => {
+  const filename = path.resolve(__dirname, '../app.json')
 
   // 针对app.json写入相对应的pages文件
   function convert(input_file_path) {
@@ -61,13 +54,14 @@ function generateJson(pageUrl) {
       .replace(/(\r\n\t|\n|\r\t)/gm, '')
       .replace(/}{/g, '},{');
     let appjson = JSON.parse(newFormat)
+
     let pages = appjson.pages
 
-    if (pageUrl == '/') {
-      pages.indexOf(`pages/index`) > -1 ? '' : pages.push(`pages/index`)
-    } else {
-      pages.indexOf(`pages/${pageUrl}/index`) > -1 ? '' : pages.push(`pages/${pageUrl}/index`)
-    }
+    let pathUrl = parentPath.toLocaleLowerCase().slice(process.cwd().length + 1)
+    pathUrl = pathUrl.replace(/\\/g, '/') + '/index'
+
+    pages.indexOf(pathUrl) > -1 ? '' : pages.push(pathUrl)
+
     fs.writeFile(input_file_path, JSON.stringify(appjson, null, "\t"), (e) => {
       console.log('app.json写入成功')
     })
@@ -76,8 +70,8 @@ function generateJson(pageUrl) {
 }
 
 // 编译routesConfig.js
-function generateRoute(pageUrl) {
-  const filename = path.resolve(__dirname, '../toulPlugins/routesConfig.js')
+function generateRoute(parentPath) {
+  const filename = path.resolve(__dirname, '../plugins/routesConfig.js')
   const file = fs.readFileSync(filename, 'utf8');
   const newFormat = file
     .replace(/(\r\n\t|\n|\r\t)/gm, '')
@@ -85,10 +79,9 @@ function generateRoute(pageUrl) {
     .replace(/}{/g, '},{');
   let appjson = JSON.parse(newFormat)
 
-  let equalPath = `pages/${pageUrl}/index`
-  if (pageUrl == '/') {
-    equalPath = `pages/index`
-  }
+  let equalPath = parentPath.toLocaleLowerCase().slice(process.cwd().length + 1)
+  equalPath = equalPath.replace(/\\/g, '/') + '/index'
+
   let isHas = false
   appjson.forEach(page => {
     if (page.path == equalPath) {
@@ -98,6 +91,7 @@ function generateRoute(pageUrl) {
   })
 
   if (isHas) return
+
   appjson.push({ "path": equalPath })
   appjson = JSON.stringify(appjson, null, "\t")
   appjson = 'export default ' + appjson
