@@ -31,14 +31,10 @@ function generateFile(event) {
 
   appjsonStr = appjsonStr.replace(/\\/g, '/')
 
-  let filePath = event.path.split('\\')
-  filePath.pop()
-
-  // d = d.split('\\')[d.length - 1]
-  filePath = filePath.join('\\') + '\\index.js'
+  let indexFile = path.resolve(event.path, '../', './index.js')
 
   // 解决 git pull 执行后导致的代码被覆盖问题
-  isFileExisted(filePath).then(res => {
+  isFileExisted(indexFile).then(res => {
     console.log('当前页面存在index.js')
   }).catch(() => {
     generateJson(appjsonStr)
